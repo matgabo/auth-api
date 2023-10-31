@@ -419,6 +419,24 @@ describe('HTTP server', () => {
     });
   });
 
+  describe('when GET /', () => {
+    it('should return 200 and hello world', async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: '/',
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('Hello world!');
+    });
+  });
+
   describe('when DELETE /authentications', () => {
     it('should response 200 if refresh token valid', async () => {
       // Arrange
