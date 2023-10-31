@@ -4,7 +4,7 @@ const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTrans
 const users = require('../../Interfaces/http/api/users');
 const authentications = require('../../Interfaces/http/api/authentications');
 
-const createServer = async (container) => {
+const createServer = async (injections) => {
   const server = Hapi.server({
     host: process.env.HOST,
     port: process.env.PORT,
@@ -13,13 +13,21 @@ const createServer = async (container) => {
   await server.register([
     {
       plugin: users,
-      options: { container },
+      options: { injections },
     },
     {
       plugin: authentications,
-      options: { container },
+      options: { injections },
     },
   ]);
+
+  server.route({
+    method: 'GET',
+    path: '/',
+    handler: () => ({
+      value: 'Hello world!',
+    }),
+  });
 
   server.ext('onPreResponse', (request, h) => {
     // mendapatkan konteks response dari request
